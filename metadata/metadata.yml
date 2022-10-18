@@ -1,0 +1,8 @@
+metadata_version: 1
+name: EMR Serverless PySpark Job
+description: |-
+  This capsule runs a PySpark job on EMR Serverless that analyzes data from the NOAA Global Surface Summary of Day dataset from the Registry of Open Data on AWS.
+
+  It analyzes data from a given year and finds the weather location with the most extreme rain, wind, snow, and temperature.
+authors:
+- name: Jake Valsamis
