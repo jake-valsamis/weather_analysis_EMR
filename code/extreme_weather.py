@@ -21,7 +21,7 @@ from datetime import date
 from pyspark.sql import SparkSession, DataFrame, Row
 from pyspark.sql import functions as F
 
-# CONFIGURE S3 BUCKET
+# OVERWRITTEN BY update_py.py
 S3_BUCKET = "research-emr-tutorial"
 
 def findLargest(df: DataFrame, col_name: str) -> Row:
@@ -52,9 +52,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         year = sys.argv[1]
     else:
-        #year = date.today().year
-        year = "2022"
-
+        year = date.today().year
+        
     df = spark.read.csv(f"s3://{S3_BUCKET}/noaa-gsod-pds/{year}/", header=True, inferSchema=True)
     print(f"The amount of weather readings in {year} is: {df.count()}\n")
 

@@ -2,6 +2,12 @@
 
 source ./config.sh
 
+# transfer data to S3 
+aws s3 sync ../data/noaa-gsod-pds/${current_year}/ s3://${S3_BUCKET}/noaa-gsod-pds/${current_year}/
+
+# update S3 bucket in extreme_weather.py
+python ./update_py.py $S3_BUCKET
+
 aws s3 cp extreme_weather.py s3://${S3_BUCKET}/code/pyspark/
 
 # create and start an Application on EMR Serverless
@@ -86,6 +92,7 @@ echo "Job complete"
 # get output 
 aws s3 cp s3://${S3_BUCKET}/logs/applications/$APPLICATION_ID/jobs/$JOB_RUN_ID/SPARK_DRIVER/stdout.gz ../results/
 gunzip ../results/stdout.gz 
+mv ../results/stdout ../results/extreme_weather_report.txt
 
 # clean up: stop and delete application 
 aws emr-serverless stop-application \
@@ -95,3 +102,6 @@ aws emr-serverless delete-application \
     --application-id $APPLICATION_ID
 
 echo "Application $APPLICATION_ID deleted"
+
+# delete intermediate files from S3
+aws s3 rm s3://${S3_BUCKET}/noaa-gsod-pds/${current_year} --recursive
